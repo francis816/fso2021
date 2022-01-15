@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import axios from 'axios'
 
 const Filter = ({ change }) => {
   return (
@@ -44,12 +45,18 @@ const Persons = ({ contactToShow }) => {
 }
 
 function App() {
-  const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', number: "040-1234567" }
-  ])
+  const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
+
+  useEffect(() => {
+    axios
+      .get('http://localhost:3001/persons')
+      .then(response => {
+        setPersons(response.data)
+      })
+  }, [])
 
   const addContact = (event) => {
     event.preventDefault()
@@ -67,7 +74,7 @@ function App() {
         return
       }
     }
-    // cannot put the 2 lines below inside the for loop above, bc not every name in the array = name, which causes always push into the list
+    // cannot put below inside the for loop above, bc not every name in the array = name, which causes always push into the list
     setPersons(persons.concat(contactObj))
     setNewName('')
     setNewNumber('')
