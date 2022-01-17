@@ -32,11 +32,13 @@ const App = () => {
         const wantUpdate = window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)
 
         if (wantUpdate) {
+          // must compare with name, not id, bc new contactObj has a new id
           const targetPerson = persons.find(person => person.name.toLowerCase() === contactObj.name.toLowerCase())
           const changedNum = { ...targetPerson, number: newNumber }
           personsService
             .update(targetPerson.id, changedNum)
             .then(returnedObj => {
+              // can also use person.name.toLowerCase() instead of person.id 
               setPersons(persons.map(person => person.id !== targetPerson.id ? person : returnedObj))
             })
         }
