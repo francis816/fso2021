@@ -1,60 +1,21 @@
 import React, { useEffect, useState } from 'react'
-import axios from 'axios'
-
-const Filter = ({ change }) => {
-  return (
-    <>
-      filter shown with <input onChange={change} />
-    </>
-  )
-}
+import personsService from './services/persons'
+import Filter from './components/Filter'
+import PersonForm from './components/PersonForm'
+import Persons from './components/Persons'
 
 
-const PersonForm = ({ addContact, handleChange, handleNumChange, newName, newNumber }) => {
-  return (
-    <form onSubmit={addContact}>
-      <div>
-        name: <input value={newName} onChange={handleChange} />
-      </div>
-      <div>
-        number: <input value={newNumber} onChange={handleNumChange} />
-      </div>
-      <div>
-        <button type="submit">add</button>
-      </div>
-    </form>
-  )
-}
-
-const Contact = ({ name, phone }) => {
-  return (
-    <>
-      <p>{name} {phone}</p>
-    </>
-  )
-}
-
-const Persons = ({ contactToShow }) => {
-  return (
-    <>
-      {contactToShow.map((person) => (
-        <Contact key={person.name} name={person.name} phone={person.number} />
-      ))}
-    </>
-  )
-}
-
-function App() {
+const App = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
 
   useEffect(() => {
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => {
-        setPersons(response.data)
+    personsService
+      .getAll()
+      .then(initialPersons => {
+        setPersons(initialPersons)
       })
   }, [])
 
@@ -64,9 +25,21 @@ function App() {
       name: newName,
       number: newNumber
     }
+    // check if contact already existed in phonebook
     for (let i = 0; i < persons.length; i++) {
-      if ((persons[i].name) === newName) {
-        alert(`${newName} is already added to phonebook`)
+      // if so, want to update the contract?
+      if ((persons[i].name.toLowerCase()) === newName.toLowerCase()) {
+        const wantUpdate = window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)
+
+        if (wantUpdate) {
+          const targetPerson = persons.find(person => person.name.toLowerCase() === contactObj.name.toLowerCase())
+          const changedNum = { ...targetPerson, number: newNumber }
+          personsService
+            .update(targetPerson.id, changedNum)
+            .then(returnedObj => {
+              setPersons(persons.map(person => person.id !== targetPerson.id ? person : returnedObj))
+            })
+        }
         return
       }
       if ((persons[i].number) === newNumber) {
@@ -74,12 +47,28 @@ function App() {
         return
       }
     }
-    // cannot put below inside the for loop above, bc not every name in the array = name, which causes always push into the list
-    setPersons(persons.concat(contactObj))
-    setNewName('')
-    setNewNumber('')
-
+    personsService
+      .create(contactObj)
+      .then(returnedObj => {
+        setPersons(persons.concat(returnedObj))
+        setNewName('')
+        setNewNumber('')
+      })
   }
+
+  const removeContact = (id) => {
+    const person = persons.find(person => person.id === id)
+
+    if (window.confirm(`Delete ${person.name} ?`)) {
+      personsService
+        .remove(id)
+        .then(
+          setPersons(persons.filter(person => person.id !== id))
+        )
+    }
+  }
+
+
   const handleChange = (event) => {
     setNewName(event.target.value)
   }
@@ -94,6 +83,7 @@ function App() {
     ? persons
     : persons.filter(person => person.name.toLowerCase().includes(filter.toLowerCase()))
 
+
   return (
     <div>
       <h2>Phonebook</h2>
@@ -101,7 +91,7 @@ function App() {
       <h3>add a new </h3>
       <PersonForm addContact={addContact} handleChange={handleChange} handleNumChange={handleNumChange} newName={newName} newNumber={newNumber} />
       <h3>Numbers</h3>
-      <Persons contactToShow={contactToShow} />
+      <Persons contactToShow={contactToShow} removeContact={removeContact} />
     </div>
   )
 }
