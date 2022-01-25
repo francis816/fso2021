@@ -1,0 +1,6 @@
+[submodule "phonebook-backend"]
+	path = phonebook-backend
+	url = https://github.com/francis816/phonebook-backend
+[submodule "part3/phonebook-backend"]
+	path = part3/phonebook-backend
+	url = https://github.com/francis816/phonebook-backend
