@@ -7,3 +7,24 @@ Content-Type: application/json
     "url" : "https://jamesclear.com/atomic-habits",
     "likes" : 89
 }
+
+###
+POST http://localhost:3003/api/users
+Content-Type: application/json
+
+{
+    "username": "hellas",
+    "name": "Arto Hellas",
+    "password": "ah123123"
+}
+
+
+###
+POST http://localhost:3003/api/users
+Content-Type: application/json
+
+{
+    "username": "mluukkai",
+    "name": "Matti Luukkainen",
+    "password": "ml123456"
+}
