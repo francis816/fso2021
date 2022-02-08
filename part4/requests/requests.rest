@@ -5,8 +5,22 @@ Content-Type: application/json
     "title" : "Atomic Habits",
     "author" : "James Clear",
     "url" : "https://jamesclear.com/atomic-habits",
-    "likes" : 89
+    "likes" : 89,
+    "userId": "6201dac7b492540d5e03cdae"
 }
+
+###
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+
+{
+        "title": "React patterns",
+        "author": "Michael Chan",
+        "url": "https://reactpatterns.com/",
+        "likes": 7,
+        "userId":"6201dac7b492540d5e03cdae"
+}
+
 
 ###
 POST http://localhost:3003/api/users
