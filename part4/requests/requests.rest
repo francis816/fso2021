@@ -28,3 +28,26 @@ Content-Type: application/json
     "name": "Matti Luukkainen",
     "password": "ml123456"
 }
+
+
+###
+POST http://localhost:3003/api/users
+Content-Type: application/json
+
+{
+    "username": "gigi",
+    "name": "Grace C.",
+    "password": "ml123456"
+}
+
+
+
+###
+POST http://localhost:3003/api/users
+Content-Type: application/json
+
+{
+    "username": "root",
+    "name": "Grace",
+    "password": "ml123456"
+}

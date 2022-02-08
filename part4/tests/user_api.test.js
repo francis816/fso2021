@@ -38,3 +38,80 @@ test('create a new user', async () => {
     const usernames = usersAtEnd.map(u => u.username)
     expect(usernames).toContain(newUser.username)
 })
+
+
+describe('invalid users', () => {
+    test('username too short', async () => {
+        const usersAtStart = await helper.usersInDb()
+
+        const newUser = {
+            username: 'gi',
+            name: 'gigi chang',
+            password: 'gigi1234567'
+        }
+
+        const result = await api
+            .post('/api/users')
+            .send(newUser)
+            .expect(400)
+            .expect('Content-Type', /application\/json/)
+
+        expect(result.body.error).toContain('shorter than the minimum allowed length')
+
+        const usersAtEnd = await helper.usersInDb()
+        expect(usersAtEnd).toHaveLength(usersAtStart.length)
+
+        const usernames = usersAtEnd.map(user => user.username)
+        expect(usernames).not.toContain(newUser.username)
+    })
+
+    test('password too short', async () => {
+        const usersAtStart = await helper.usersInDb()
+
+        const newUser = {
+            username: 'gigigi',
+            name: 'gigi chang',
+            password: 'gi'
+        }
+
+        const result = await api
+            .post('/api/users')
+            .send(newUser)
+            .expect(400)
+            .expect('Content-Type', /application\/json/)
+
+        expect(result.body.error).toContain('must be > 3 characters')
+
+        const usersAtEnd = await helper.usersInDb()
+        expect(usersAtEnd).toHaveLength(usersAtStart.length)
+
+        const usernames = usersAtEnd.map(user => user.username)
+        expect(usernames).not.toContain(newUser.username)
+    })
+
+    test('username already existed', async () => {
+        const usersAtStart = await helper.usersInDb()
+
+        const newUser = {
+            username: 'root',
+            name: 'abcd root',
+            password: 'root123456'
+        }
+
+        const result = await api
+            .post('/api/users')
+            .send(newUser)
+            .expect(400)
+            .expect('Content-Type', /application\/json/)
+
+        expect(result.body.error).toContain('expected `username` to be unique')
+
+        const usersAtEnd = await helper.usersInDb()
+        expect(usersAtEnd).toHaveLength(usersAtStart.length)
+    }, 10000)
+})
+
+
+afterAll(() => {
+    mongoose.connection.close()
+})
