@@ -82,12 +82,12 @@ Content-Type: application/json
 ###
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImdpZ2kiLCJpZCI6IjYyMDFkYWM3YjQ5MjU0MGQ1ZTAzY2RhZSIsImlhdCI6MTY0NDM3MTg0NX0.-asoIiSGMdgiIsO9PRI7H9WhORxCigzEcRufBcZ6wgg
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImdpZ2kiLCJpZCI6IjYyMDFkYWM3YjQ5MjU0MGQ1ZTAzY2RhZSIsImlhdCI6MTY0NDM3NTE0Nn0.mi2o2zLDOC1fY040adBgP3EJnoRZZaG4gDdknnFpYnI
 
 {
-    "title": "abc patterns",
-    "author": "Abc Chan",
+    "title": "gh patterns",
+    "author": "ghi Chan",
     "url": "https://google.com/",
-    "likes": 7,
-    "userId":"6201dac7b492540d5e03cdae"
+    "likes": 7
 }
+// no id needed for above blog since we have the user's token 
