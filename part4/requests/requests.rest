@@ -76,3 +76,18 @@ Content-Type: application/json
     "username" : "gigi",
     "password" : "ml123456"
 }
+
+
+
+###
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImdpZ2kiLCJpZCI6IjYyMDFkYWM3YjQ5MjU0MGQ1ZTAzY2RhZSIsImlhdCI6MTY0NDM3MTg0NX0.-asoIiSGMdgiIsO9PRI7H9WhORxCigzEcRufBcZ6wgg
+
+{
+    "title": "abc patterns",
+    "author": "Abc Chan",
+    "url": "https://google.com/",
+    "likes": 7,
+    "userId":"6201dac7b492540d5e03cdae"
+}
