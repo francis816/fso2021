@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './/services/login'
-
+import { Notification, ErrorMessage } from './components/Message'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -14,6 +14,9 @@ const App = () => {
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
   const [likes, setLikes] = useState(0)
+
+  const [message, setMessage] = useState(null)
+  const [errorMessage, setErrorMessage] = useState(null)
 
 
   useEffect(() => {
@@ -50,29 +53,48 @@ const App = () => {
         setAuthor('')
         setUrl('')
       })
+      .then(() => {
+
+        setMessage(`a new blog ${title} by ${author} added`)
+        setTimeout(() => {
+          setMessage(null)
+        }, 5000)
+      })
+    // .catch(() => {
+    //   setErrorMessage(`xxxxxxxxxx`)
+    //   setTimeout(() => {
+    //     setErrorMessage(null)
+    //   }, 5000)
+    // })
   }
 
   const handleLogin = async (event) => {
     event.preventDefault()
 
-    // try {
-    const user = await loginService.login({
-      username, password,
-    })
+    try {
+      const user = await loginService.login({
+        username, password,
+      })
 
-    window.localStorage.setItem(
-      'loggedBlogappUser', JSON.stringify(user)
-    )
+      window.localStorage.setItem(
+        'loggedBlogappUser', JSON.stringify(user)
+      )
 
-    blogService.setToken(user.token)
-    setUser(user)
-    setUsername('')
-    setPassword('')
-    // } catch (exception) {
-    //   setErrorMessage('Wrong credentials')
-    //   setTimeout(() => {
-    //     setErrorMessage(null)
-    //   }, 5000)
+      blogService.setToken(user.token)
+      setUser(user)
+      setUsername('')
+      setPassword('')
+    } catch (exception) {
+      // trying to see if it logs hihi out
+      // it does, so the function is not wrong 
+      // so probably something wrong during rendering at the bottom
+      // figured out should put errormessage in login form, not after logging in
+      console.log(`hihi`)
+      setErrorMessage('wrong username or password')
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
+    }
   }
 
   const handleLogout = (event) => {
@@ -85,6 +107,7 @@ const App = () => {
     return (
       <>
         <h2> Log in to application </h2>
+        <ErrorMessage errorMessage={errorMessage} />
         <form onSubmit={handleLogin}>
           <div>
             username
@@ -143,6 +166,7 @@ const App = () => {
         loginForm() :
         <>
           <h2>blogs</h2>
+          <Notification message={message} />
           <div>{user.name} logged in <button onClick={handleLogout}>logout</button></div>
           <br></br>
           {createForm()}
